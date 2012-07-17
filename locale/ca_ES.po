@@ -29,3 +29,7 @@ msgstr "Sense impost"
 msgctxt "field:stock.shipment.out,untaxed_amount_cache:"
 msgid "Untaxed Cache"
 msgstr "Sense impost precalculada"
+
+msgctxt "model:res.group,name:group_stock_price"
+msgid "Stock Price"
+msgstr "Preus estoc"

@@ -1,0 +1,31 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:stock.move,amount:"
+msgid "Amount"
+msgstr "Quantitat"
+
+msgctxt "field:stock.shipment.out,tax_amount:"
+msgid "Tax"
+msgstr "Impost"
+
+msgctxt "field:stock.shipment.out,tax_amount_cache:"
+msgid "Tax Cache"
+msgstr "Impostos precalculats"
+
+msgctxt "field:stock.shipment.out,total_amount:"
+msgid "Total"
+msgstr "Total"
+
+msgctxt "field:stock.shipment.out,total_amount_cache:"
+msgid "Total Tax"
+msgstr "Total impostos"
+
+msgctxt "field:stock.shipment.out,untaxed_amount:"
+msgid "Untaxed"
+msgstr "Sense impost"
+
+msgctxt "field:stock.shipment.out,untaxed_amount_cache:"
+msgid "Untaxed Cache"
+msgstr "Sense impost precalculada"

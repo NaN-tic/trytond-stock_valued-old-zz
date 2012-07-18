@@ -11,10 +11,17 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
                 <data>
                     <xpath
                         expr="/form/field[@name=&quot;unit_price&quot;]"
-                        position="after">
-                        <newline/>
-                        <label name="amount"/>
-                        <field name="amount"/>
+                        position="replace"/>
+                    <xpath
+                        expr="/form/label[@name=&quot;unit_price&quot;]"
+                        position="replace">
+                        <group colspan="4" id="stock_price"
+                            states="{'invisible': Not(In(%(stock_valued.group_stock_price)d, Eval('groups', [])))}">
+                            <label name="unit_price"/>
+                            <field name="unit_price" />
+                            <label name="amount"/>
+                            <field name="amount" />
+                        </group>
                     </xpath>
                 </data>
                 ]]>

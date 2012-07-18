@@ -12,7 +12,8 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
                     <xpath
                         expr="/form/group[@id=&quot;state_buttons&quot;]"
                         position="before">
-                        <group col="6" colspan="6" id="amount" states="{'invisible': Not(In(%(stock_valued.group_stock_price)d, Eval('groups', [])))}">
+                        <group col="6" colspan="6" id="amount" 
+                            states="{'invisible': Not(In(%(stock_valued.group_stock_price)d, Eval('groups', [])))}">
                             <label name="untaxed_amount"/>
                             <field name="untaxed_amount"/>
                             <label name="tax_amount"/>

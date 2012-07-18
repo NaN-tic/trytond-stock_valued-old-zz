@@ -1,2 +1,4 @@
+* Add on_change_with_amount method on change price or quantity
+
 Version 2.4.0 - 2012-07-16
 * Initial release

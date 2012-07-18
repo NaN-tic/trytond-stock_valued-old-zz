@@ -22,6 +22,20 @@ class Move(ModelSQL, ModelView):
                 }, on_change_with=['quantity', 'unit_price'],
             ),'get_amount')
 
+    def on_change_with_amount(self, vals):
+        currency_obj = Pool().get('currency.currency')
+        if vals.get('quantity') and vals.get('unit_price'):
+            currency = (vals.get('_parent_invoice.currency')
+                or vals.get('currency'))
+            if isinstance(currency, (int, long)) and currency:
+                currency = currency_obj.browse(currency)
+            amount = Decimal(str(vals.get('quantity') or '0.0')) * \
+                    (vals.get('unit_price') or Decimal('0.0'))
+            if currency:
+                return currency_obj.round(currency, amount)
+            return amount
+        return Decimal('0.0')
+
     def get_amount(self, ids, name):
         currency_obj = Pool().get('currency.currency')
         res = {}

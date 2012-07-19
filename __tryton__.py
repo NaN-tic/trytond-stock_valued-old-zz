@@ -21,6 +21,7 @@ Si habeis instalado el módulo sale_discount, recuerden también de instalar sto
     'depends': [
         'ir',
         'res',
+        'account_invoice',
         'stock',
     ],
     'xml': [

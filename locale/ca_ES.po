@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "field:stock.move,amount:"
 msgid "Amount"
-msgstr "Quantitat"
+msgstr "Import"
 
 msgctxt "field:stock.shipment.out,tax_amount:"
 msgid "Tax"

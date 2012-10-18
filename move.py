@@ -2,16 +2,19 @@
 #The COPYRIGHT file at the top level of this repository contains 
 #the full copyright notices and license terms.
 
-from trytond.model import ModelView, ModelSQL, fields
+from trytond.model import fields
 from trytond.pyson import Not, Equal, Eval, Bool
-from trytond.transaction import Transaction
-from trytond.pool import Pool
+from trytond.pool import Pool, PoolMeta
 from decimal import Decimal
+
+__all__ = ['Move']
+__metaclass__ = PoolMeta
 
 _ZERO = Decimal('0.0')
 
-class Move(ModelSQL, ModelView):
-    _name = 'stock.move'
+class Move:
+    "Stock Move"
+    __name__ = 'stock.move'
 
     amount = fields.Function(fields.Numeric('Amount',
             digits=(16, 4),
@@ -22,29 +25,25 @@ class Move(ModelSQL, ModelView):
                 }, on_change_with=['quantity', 'unit_price'],
             ),'get_amount')
 
-    def on_change_with_amount(self, vals):
-        currency_obj = Pool().get('currency.currency')
-        if vals.get('quantity') and vals.get('unit_price'):
+    def on_change_with_amount(self, name=None):
+        Currency = Pool().get('currency.currency')
+        if self.quantity and self.unit_price:
             currency = (vals.get('_parent_invoice.currency')
-                or vals.get('currency'))
+                or self.currency)
             if isinstance(currency, (int, long)) and currency:
-                currency = currency_obj.browse(currency)
-            amount = Decimal(str(vals.get('quantity') or '0.0')) * \
-                    (vals.get('unit_price') or Decimal('0.0'))
+                currency = Currency.browse(currency)
+            amount = Decimal(str(self.quantity or '0.0')) * \
+                    (self.unit_price or Decimal('0.0'))
             if currency:
-                return currency_obj.round(currency, amount)
+                return Currency.round(currency, amount)
             return amount
         return Decimal('0.0')
 
-    def get_amount(self, ids, name):
-        currency_obj = Pool().get('currency.currency')
-        res = {}
-        for move in self.browse(ids):
-            res[move.id] = _ZERO
-            if move.quantity:
-                res[move.id] += currency_obj.round(
-                            move.company.currency,
-                            Decimal(str(move.quantity)) * move.unit_price)
+    def get_amount(self, name):
+        Currency = Pool().get('currency.currency')
+        res = _ZERO
+        if self.quantity:
+            res = Currency.round(
+                    self.company.currency,
+                    Decimal(str(self.quantity)) * self.unit_price)
         return res
-
-Move()

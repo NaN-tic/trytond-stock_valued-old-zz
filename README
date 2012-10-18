@@ -2,7 +2,6 @@ trytond_stock_valued
 ====================
 
 The stock_valued module of the Tryton application platform.
-See __tryton__.py
 
 Installing
 ----------

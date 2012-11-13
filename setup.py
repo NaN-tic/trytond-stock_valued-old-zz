@@ -27,20 +27,20 @@ for dep in info.get('depends', []):
 requires.append('trytond >= %s.%s, < %s.%s' %
         (major_version, minor_version, major_version, minor_version + 1))
 
-setup(name='trytond_stock_valued',
+setup(name='trytonzz_stock_valued',
     version=info.get('version', '0.0.1'),
     description='Tryton module for stock valued',
     author='Zikzakmedia SL',
     author_email='zikzak@zikzakmedia.com',
     url='http://www.zikzakmedia.com',
-    download_url="https://bitbucket.org/zikzakmedia/trytond-stock_valued",
-    package_dir={'trytond.modules.stock_valued': '.'},
+    download_url="https://bitbucket.org/zikzakmedia/trytonzz-stock_valued",
+    package_dir={'trytonzz.modules.stock_valued': '.'},
     packages=[
-        'trytond.modules.stock_valued',
-        'trytond.modules.stock_valued.tests',
+        'trytonzz.modules.stock_valued',
+        'trytonzz.modules.stock_valued.tests',
     ],
     package_data={
-        'trytond.modules.stock_valued': info.get('xml', []) \
+        'trytonzz.modules.stock_valued': info.get('xml', []) \
             + ['tryton.cfg', 'locale/*.po'],
     },
     classifiers=[
@@ -63,9 +63,9 @@ setup(name='trytond_stock_valued',
     install_requires=requires,
     zip_safe=False,
     entry_points="""
-    [trytond.modules]
-    stock_valued = trytond.modules.stock_valued
+    [trytonzz.modules]
+    stock_valued = trytonzz.modules.stock_valued
     """,
     test_suite='tests',
-    test_loader='trytond.test_loader:Loader',
+    test_loader='trytonzz.test_loader:Loader',
 )

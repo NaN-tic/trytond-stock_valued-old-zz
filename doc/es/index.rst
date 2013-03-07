@@ -14,8 +14,8 @@ también instalar el módulo
 
 .. figure:: images/tryton-albaranes-valorados.png
 
-Módulos que dependen
-====================
+Módulos de los que depende
+==========================
 
 Instalados
 ----------

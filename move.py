@@ -1,7 +1,6 @@
 #This file is part stock_valued module for Tryton.
 #The COPYRIGHT file at the top level of this repository contains 
 #the full copyright notices and license terms.
-
 from trytond.model import fields
 from trytond.pyson import Not, Equal, Eval, Bool
 from trytond.pool import Pool, PoolMeta
@@ -26,16 +25,9 @@ class Move:
             ),'get_amount')
 
     def on_change_with_amount(self, name=None):
-        Currency = Pool().get('currency.currency')
         if self.quantity and self.unit_price:
-            currency = (vals.get('_parent_invoice.currency')
-                or self.currency)
-            if isinstance(currency, (int, long)) and currency:
-                currency = Currency.browse(currency)
             amount = Decimal(str(self.quantity or '0.0')) * \
                     (self.unit_price or Decimal('0.0'))
-            if currency:
-                return Currency.round(currency, amount)
             return amount
         return Decimal('0.0')
 

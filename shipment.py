@@ -13,7 +13,8 @@ __metaclass__ = PoolMeta
 
 class ShipmentOut:
     __name__ = 'stock.shipment.out'
-
+    currency_digits = fields.Function(fields.Integer('Currency Digits'),
+        'on_change_with_currency_digits')
     untaxed_amount = fields.Function(fields.Numeric('Untaxed',
             digits=(16, Eval('currency_digits', 2)),
             depends=['currency_digits']), 'get_untaxed_amount')
@@ -40,6 +41,11 @@ class ShipmentOut:
     def __setup__(cls):
         super(ShipmentOut, cls).__setup__()
         cls._states_cached = ['done', 'assigned', 'packed', 'waiting', 'cancel']
+
+    def on_change_with_currency_digits(self, name=None):
+        if self.company:
+            return self.company.currency.digits
+        return 2
 
     def get_tax_context(self):
         context = {}

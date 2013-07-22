@@ -89,7 +89,7 @@ class ShipmentOut:
         taxes = {}
         for move in self.outgoing_moves:
             with Transaction().set_context(context):
-                tax_list = Tax.compute(getattr(move.product, 'customer_taxes', []),
+                tax_list = Tax.compute(getattr(move.product, 'customer_taxes_used', []),
                     move.unit_price or Decimal('0.0'),
                     move.quantity or 0.0)
             for tax in tax_list:

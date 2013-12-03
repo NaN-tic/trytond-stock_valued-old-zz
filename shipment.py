@@ -18,15 +18,15 @@ class ShipmentOut:
         'on_change_with_currency')
     currency_digits = fields.Function(fields.Integer('Currency Digits'),
         'on_change_with_currency_digits')
-    amount_untaxed = fields.Numeric('Untaxed',
+    untaxed_amount = fields.Numeric('Untaxed',
         digits=(16, Eval('currency_digits', 2)),
         readonly=True,
         depends=['currency_digits'])
-    amount_tax = fields.Numeric('Tax',
+    tax_amount = fields.Numeric('Tax',
         digits=(16, Eval('currency_digits', 2)),
         readonly=True,
         depends=['currency_digits'])
-    amount_total = fields.Numeric('Total Tax',
+    total_amount = fields.Numeric('Total Tax',
         digits=(16, Eval('currency_digits', 2)),
         readonly=True,
         depends=['currency_digits'])
@@ -46,9 +46,9 @@ class ShipmentOut:
         super(ShipmentOut, cls).done(shipments)
         for shipment in shipments:
             data = {
-                    'amount_untaxed': shipment.get_untaxed_amount(None),
-                    'amount_tax': shipment.get_tax_amount(None),
-                    'amount_total': shipment.get_total_amount(None),
+                'untaxed_amount': shipment.get_untaxed_amount(None),
+                'tax_amount': shipment.get_tax_amount(None),
+                'total_amount': shipment.get_total_amount(None),
                 }
             cls.write([shipment], data)
 
@@ -100,5 +100,6 @@ class ShipmentOut:
         Return the total amount of each ShipmentOut
         '''
         if self.currency:
-            return self.currency.round(self.untaxed_amount + self.tax_amount)
+            return self.currency.round((self.untaxed_amount or Decimal('0.0'))
+                + (self.tax_amount or Decimal('0.0')))
         return Decimal(0)

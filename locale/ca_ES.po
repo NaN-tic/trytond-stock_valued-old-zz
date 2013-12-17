@@ -6,30 +6,25 @@ msgctxt "field:stock.move,amount:"
 msgid "Amount"
 msgstr "Import"
 
+#, fuzzy
+msgctxt "field:stock.shipment.out,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
+#, fuzzy
+msgctxt "field:stock.shipment.out,currency_digits:"
+msgid "Currency Digits"
+msgstr "Decimals de moneda"
+
 msgctxt "field:stock.shipment.out,tax_amount:"
 msgid "Tax"
 msgstr "Impost"
 
-msgctxt "field:stock.shipment.out,tax_amount_cache:"
-msgid "Tax Cache"
-msgstr "Impostos precalculats"
-
+#, fuzzy
 msgctxt "field:stock.shipment.out,total_amount:"
-msgid "Total"
-msgstr "Total"
-
-msgctxt "field:stock.shipment.out,total_amount_cache:"
 msgid "Total Tax"
-msgstr "Total impostos"
+msgstr "Total"
 
 msgctxt "field:stock.shipment.out,untaxed_amount:"
 msgid "Untaxed"
 msgstr "Sense impost"
-
-msgctxt "field:stock.shipment.out,untaxed_amount_cache:"
-msgid "Untaxed Cache"
-msgstr "Sense impost precalculada"
-
-msgctxt "model:res.group,name:group_stock_price"
-msgid "Stock Price"
-msgstr "Preus estoc"

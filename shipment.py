@@ -14,9 +14,11 @@ __metaclass__ = PoolMeta
 
 class ShipmentOut:
     __name__ = 'stock.shipment.out'
-    currency = fields.Function(fields.Integer('Currency'),
+    currency = fields.Function(fields.Many2One('currency.currency', 'Currency',
+            on_change_with=['company']),
         'on_change_with_currency')
-    currency_digits = fields.Function(fields.Integer('Currency Digits'),
+    currency_digits = fields.Function(fields.Integer('Currency Digits',
+            on_change_with=['company']),
         'on_change_with_currency_digits')
     untaxed_amount = fields.Numeric('Untaxed',
         digits=(16, Eval('currency_digits', 2)),
@@ -26,14 +28,14 @@ class ShipmentOut:
         digits=(16, Eval('currency_digits', 2)),
         readonly=True,
         depends=['currency_digits'])
-    total_amount = fields.Numeric('Total Tax',
+    total_amount = fields.Numeric('Total',
         digits=(16, Eval('currency_digits', 2)),
         readonly=True,
         depends=['currency_digits'])
 
     def on_change_with_currency(self, name=None):
         if self.company:
-            return self.company.currency
+            return self.company.currency.id
         return None
 
     def on_change_with_currency_digits(self, name=None):

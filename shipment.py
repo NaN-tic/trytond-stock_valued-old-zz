@@ -47,61 +47,35 @@ class ShipmentOut:
     def done(cls, shipments):
         super(ShipmentOut, cls).done(shipments)
         for shipment in shipments:
-            data = {
-                'untaxed_amount': shipment.get_untaxed_amount(None),
-                'tax_amount': shipment.get_tax_amount(None),
-                'total_amount': shipment.get_total_amount(None),
-                }
-            cls.write([shipment], data)
+            cls.write([shipment], shipment.calc_amounts())
 
-    def get_tax_context(self):
-        context = {}
-        user = Pool().get('res.user')(Transaction().user)
-        context['language'] = user.language
-        if self.customer and self.customer.lang:
-            context['language'] = self.customer.lang.code
-        return context
-
-    def get_untaxed_amount(self, name):
-        '''
-        Compute the untaxed amount for each ShipmentOut
-        '''
+    def calc_amounts(self):
         Currency = Pool().get('currency.currency')
-        amount = sum((m.amount for m in self.outgoing_moves), Decimal(0))
-        return Currency.round(self.company.currency, amount)
-
-    def get_tax_amount(self, name):
-        '''
-        Compute tax amount for each ShipmentOut
-        '''
-        pool = Pool()
-        Currency = pool.get('currency.currency')
-        Tax = pool.get('account.tax')
-        Invoice = pool.get('account.invoice')
-
-        context = self.get_tax_context()
+        untaxed_amount = Decimal(0)
         taxes = {}
         for move in self.outgoing_moves:
-            with Transaction().set_context(context):
-                tax_list = Tax.compute(getattr(move.product,
-                        'customer_taxes_used', []),
-                    move.unit_price or Decimal('0.0'),
-                    move.quantity or 0.0)
-            for tax in tax_list:
-                key, val = Invoice._compute_tax(tax, 'out_invoice')
-                if not key in taxes:
-                    taxes[key] = val['amount']
-                else:
-                    taxes[key] += val['amount']
-        amount = sum((Currency.round(self.company.currency, taxes[key])
-                for key in taxes), Decimal(0))
-        return Currency.round(self.company.currency, amount)
+            if move.state == 'cancelled':
+                continue
+            if move.currency and move.currency != self.company.currency:
+                # convert wrt currency
+                with Transaction().set_context(date=self.effective_date):
+                    untaxed_amount += Currency.compute(move.currency,
+                        move.untaxed_amount, self.company.currency,
+                        round=False)
+                    for key, value in move._taxes_amount().items():
+                        value = Currency.compute(move.currency, value,
+                            self.company.currency, round=False)
+                        taxes[key] = taxes.get(key, Decimal(0)) + value
+            else:
+                untaxed_amount += move.untaxed_amount
+                for key, value in move._taxes_amount().items():
+                    taxes[key] = taxes.get(key, Decimal(0)) + value
 
-    def get_total_amount(self, name):
-        '''
-        Return the total amount of each ShipmentOut
-        '''
-        if self.currency:
-            return self.currency.round((self.untaxed_amount or Decimal('0.0'))
-                + (self.tax_amount or Decimal('0.0')))
-        return Decimal(0)
+        untaxed_amount = self.company.currency.round(untaxed_amount)
+        tax_amount = sum((self.company.currency.round(tax)
+                for tax in taxes.values()), Decimal(0))
+        return {
+            'untaxed_amount': untaxed_amount,
+            'tax_amount': tax_amount,
+            'total_amount': untaxed_amount + tax_amount,
+            }

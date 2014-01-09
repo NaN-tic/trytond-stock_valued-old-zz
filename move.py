@@ -100,7 +100,7 @@ class Move:
             if 'discount' in names:
                 result['discount'][move.id] = (move.origin and
                     hasattr(move.origin, 'discount') and
-                    move.origin.gross_unit_price or _ZERO)
+                    move.origin.discount or _ZERO)
             if 'untaxed_amount' in names:
                 result['untaxed_amount'][move.id] = (
                     Decimal(str(move.quantity or 0)) *

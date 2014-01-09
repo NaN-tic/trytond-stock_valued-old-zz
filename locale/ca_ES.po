@@ -2,16 +2,30 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "field:stock.move,amount:"
-msgid "Amount"
-msgstr "Import"
+msgctxt "field:stock.move,currency_digits:"
+msgid "Currency Digits"
+msgstr "Dígits de la moneda"
 
-#, fuzzy
+msgctxt "field:stock.move,discount:"
+msgid "Discount"
+msgstr "Descompte"
+
+msgctxt "field:stock.move,gross_unit_price:"
+msgid "Gross Price"
+msgstr "Preu brut"
+
+msgctxt "field:stock.move,tax_amount:"
+msgid "Tax"
+msgstr "Impost"
+
+msgctxt "field:stock.move,untaxed_amount:"
+msgid "Untax Amount"
+msgstr "Import (sense imp.)"
+
 msgctxt "field:stock.shipment.out,currency:"
 msgid "Currency"
 msgstr "Moneda"
 
-#, fuzzy
 msgctxt "field:stock.shipment.out,currency_digits:"
 msgid "Currency Digits"
 msgstr "Decimals de moneda"
@@ -20,11 +34,10 @@ msgctxt "field:stock.shipment.out,tax_amount:"
 msgid "Tax"
 msgstr "Impost"
 
-#, fuzzy
 msgctxt "field:stock.shipment.out,total_amount:"
-msgid "Total Tax"
+msgid "Total"
 msgstr "Total"
 
 msgctxt "field:stock.shipment.out,untaxed_amount:"
 msgid "Untaxed"
-msgstr "Sense impost"
+msgstr "Base imposable"

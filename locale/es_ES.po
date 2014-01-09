@@ -2,34 +2,42 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "field:stock.move,amount:"
-msgid "Amount"
-msgstr "Importe"
+msgctxt "field:stock.move,currency_digits:"
+msgid "Currency Digits"
+msgstr "Decimales de moneda"
+
+msgctxt "field:stock.move,discount:"
+msgid "Discount"
+msgstr "Descuento"
+
+msgctxt "field:stock.move,gross_unit_price:"
+msgid "Gross Price"
+msgstr "Precio bruto"
+
+msgctxt "field:stock.move,tax_amount:"
+msgid "Tax"
+msgstr "Impuesto"
+
+msgctxt "field:stock.move,untaxed_amount:"
+msgid "Untax Amount"
+msgstr "Importe (sin imp.)"
+
+msgctxt "field:stock.shipment.out,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
+msgctxt "field:stock.shipment.out,currency_digits:"
+msgid "Currency Digits"
+msgstr "Decimales de moneda"
 
 msgctxt "field:stock.shipment.out,tax_amount:"
 msgid "Tax"
 msgstr "Impuesto"
 
-msgctxt "field:stock.shipment.out,tax_amount_cache:"
-msgid "Tax Cache"
-msgstr "Impuestos precalculado"
-
 msgctxt "field:stock.shipment.out,total_amount:"
 msgid "Total"
 msgstr "Total"
 
-msgctxt "field:stock.shipment.out,total_amount_cache:"
-msgid "Total Tax"
-msgstr "Total impuestos"
-
 msgctxt "field:stock.shipment.out,untaxed_amount:"
 msgid "Untaxed"
 msgstr "Base imponible"
-
-msgctxt "field:stock.shipment.out,untaxed_amount_cache:"
-msgid "Untaxed Cache"
-msgstr "Base imponible precalculada"
-
-msgctxt "model:res.group,name:group_stock_price"
-msgid "Stock Price"
-msgstr "Precios en stock"

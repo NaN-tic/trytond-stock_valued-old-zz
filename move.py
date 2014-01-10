@@ -25,18 +25,21 @@ class Move:
         'on_change_with_currency_digits')
     gross_unit_price = fields.Function(fields.Numeric('Gross Price',
             digits=(16, 4), states=STATES, depends=['state']),
-        'get_amount')
+        'get_origin_fields')
     discount = fields.Function(fields.Numeric('Discount',
             digits=(16, 4), states=STATES, depends=['state']),
-        'get_amount')
+        'get_origin_fields')
     untaxed_amount = fields.Function(fields.Numeric('Untax Amount',
             digits=(16, Eval('currency_digits', 2)), states=STATES,
             depends=['currency_digits', 'state']),
-        'get_amount')
-    tax_amount = fields.Function(fields.Numeric('Tax',
+        'get_origin_fields')
+    taxes = fields.Function(fields.Many2Many('account.tax', None, None,
+            'Taxes'),
+        'get_origin_fields')
+    total_amount = fields.Function(fields.Numeric('Total Amount',
             digits=(16, Eval('currency_digits', 2)), states=STATES,
-                depends=['currency_digits', 'state']),
-        'get_amount')
+            depends=['currency_digits', 'depends']),
+        'get_total_amount')
 
     @staticmethod
     def default_currency_digits():
@@ -88,7 +91,7 @@ class Move:
         return taxes
 
     @classmethod
-    def get_amount(cls, moves, names):
+    def get_origin_fields(cls, moves, names):
         result = {}
         for fname in names:
             result[fname] = {}
@@ -105,7 +108,16 @@ class Move:
                 result['untaxed_amount'][move.id] = (
                     Decimal(str(move.quantity or 0)) *
                     (move.unit_price or _ZERO))
-            if 'tax_amount' in names:
-                result['tax_amount'][move.id] = sum(
-                    move._taxes_amount().values(), _ZERO)
+            if 'taxes' in names:
+                result['taxes'][move.id] = (move.origin and
+                    hasattr(move.origin, 'taxes') and
+                    [t.id for t in move.origin.taxes] or [])
         return result
+
+    def get_total_amount(self, name):
+        return self.untaxed_amount + self.get_tax_amount()
+
+    def get_tax_amount(self):
+        return sum((self.currency.round(tax)
+                for tax in self._taxes_amount().values()),
+            _ZERO)

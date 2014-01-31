@@ -32,6 +32,17 @@ class ShipmentOut:
         digits=(16, Eval('currency_digits', 2)),
         readonly=True,
         depends=['currency_digits'])
+    untaxed_amount_func = fields.Function(fields.Numeric('Untaxed',
+        digits=(16, Eval('currency_digits', 2)),
+        depends=['currency_digits']), 'get_amounts')
+    tax_amount_func = fields.Function(fields.Numeric('Tax',
+        digits=(16, Eval('currency_digits', 2)),
+        readonly=True,
+        depends=['currency_digits']), 'get_amounts')
+    total_amount_func = fields.Function(fields.Numeric('Total',
+        digits=(16, Eval('currency_digits', 2)),
+        readonly=True,
+        depends=['currency_digits']), 'get_amounts')
 
     def on_change_with_currency(self, name=None):
         if self.company:
@@ -79,3 +90,29 @@ class ShipmentOut:
             'tax_amount': tax_amount,
             'total_amount': untaxed_amount + tax_amount,
             }
+
+    @classmethod
+    def get_amounts(cls, shipments, names):
+        untaxed_amount = dict((i.id, Decimal(0)) for i in shipments)
+        tax_amount = dict((i.id, Decimal(0)) for i in shipments)
+        total_amount = dict((i.id, Decimal(0)) for i in shipments)
+
+        for shipment in shipments:
+            if shipment.untaxed_amount:
+                untaxed_amount[shipment.id] = shipment.untaxed_amount
+                tax_amount[shipment.id] = shipment.tax_amount
+                total_amount[shipment.id] = shipment.total_amount
+            else:
+                res = shipment.calc_amounts()
+                untaxed_amount[shipment.id] = res['untaxed_amount']
+                tax_amount[shipment.id] = res['tax_amount']
+                total_amount[shipment.id] = res['total_amount']
+        result = {
+            'untaxed_amount_func': untaxed_amount,
+            'tax_amount_func': tax_amount,
+            'total_amount_func': total_amount,
+            }
+        for key in result.keys():
+            if key not in names:
+                del result[key]
+        return result

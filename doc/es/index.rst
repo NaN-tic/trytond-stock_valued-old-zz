@@ -1,6 +1,6 @@
-===================
-Albaranes valorados
-===================
+==========================
+Stock. Albaranes valorados
+==========================
 
 Añade importe base, impuestos e importe total a los albaranes.
 

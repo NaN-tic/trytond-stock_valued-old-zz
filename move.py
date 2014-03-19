@@ -38,7 +38,7 @@ class Move:
         'get_origin_fields')
     total_amount = fields.Function(fields.Numeric('Total Amount',
             digits=(16, Eval('currency_digits', 2)), states=STATES,
-            depends=['currency_digits', 'depends']),
+            depends=['currency_digits', 'state']),
         'get_total_amount')
 
     @staticmethod

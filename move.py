@@ -36,6 +36,10 @@ class Move:
     taxes = fields.Function(fields.Many2Many('account.tax', None, None,
             'Taxes'),
         'get_origin_fields')
+    tax_amount = fields.Function(fields.Numeric('Tax Amount',
+            digits=(16, Eval('currency_digits', 2)), states=STATES,
+            depends=['currency_digits', 'state']),
+        'get_tax_amount')
     total_amount = fields.Function(fields.Numeric('Total Amount',
             digits=(16, Eval('currency_digits', 2)), states=STATES,
             depends=['currency_digits', 'state']),
@@ -115,9 +119,9 @@ class Move:
         return result
 
     def get_total_amount(self, name):
-        return self.untaxed_amount + self.get_tax_amount()
+        return self.untaxed_amount + self.tax_amount
 
-    def get_tax_amount(self):
+    def get_tax_amount(self, name):
         return sum((self.currency.round(tax)
                 for tax in self._taxes_amount().values()),
             _ZERO)

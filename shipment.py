@@ -8,12 +8,11 @@ from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
 from decimal import Decimal
 
-__all__ = ['ShipmentOut']
+__all__ = ['ShipmentIn', 'ShipmentOut']
 __metaclass__ = PoolMeta
 
 
-class ShipmentOut:
-    __name__ = 'stock.shipment.out'
+class ShipmentValuedMixin:
     currency = fields.Function(fields.Many2One('currency.currency', 'Currency',
             on_change_with=['company']),
         'on_change_with_currency')
@@ -116,3 +115,42 @@ class ShipmentOut:
             if key not in names:
                 del result[key]
         return result
+
+
+class ShipmentIn(ShipmentValuedMixin):
+    __name__ = 'stock.shipment.in'
+
+    @classmethod
+    def create(cls, shipments):
+        shipments = super(ShipmentIn, cls).create(shipments)
+        for shipment in shipments:
+            cls.write([shipment], shipment.calc_amounts())
+        return shipments
+
+    @classmethod
+    def receive(cls, shipments):
+        super(ShipmentIn, cls).receive(shipments)
+        for shipment in shipments:
+            cls.write([shipment], shipment.calc_amounts())
+
+
+class ShipmentOut(ShipmentValuedMixin):
+    __name__ = 'stock.shipment.out'
+
+    @classmethod
+    def wait(cls, shipments):
+        super(ShipmentOut, cls).wait(shipments)
+        for shipment in shipments:
+            cls.write([shipment], shipment.calc_amounts())
+
+    @classmethod
+    def assign(cls, shipments):
+        super(ShipmentOut, cls).assign(shipments)
+        for shipment in shipments:
+            cls.write([shipment], shipment.calc_amounts())
+
+    @classmethod
+    def pack(cls, shipments):
+        super(ShipmentOut, cls).pack(shipments)
+        for shipment in shipments:
+            cls.write([shipment], shipment.calc_amounts())

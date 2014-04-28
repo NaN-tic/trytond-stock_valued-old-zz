@@ -12,7 +12,7 @@ if os.path.isdir(DIR):
 
 import unittest
 import trytond.tests.test_tryton
-from trytond.tests.test_tryton import test_depends
+from trytond.tests.test_tryton import test_depends, test_view
 
 
 class StockValuedTestCase(unittest.TestCase):
@@ -22,6 +22,12 @@ class StockValuedTestCase(unittest.TestCase):
 
     def setUp(self):
         trytond.tests.test_tryton.install_module('stock_valued')
+
+    def test0005view(self):
+        '''
+        Test view.
+        '''
+        test_view('stock_valued')
 
     def test0006depends(self):
         '''

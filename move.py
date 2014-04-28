@@ -41,9 +41,17 @@ class Move:
             depends=['currency_digits', 'state']),
         'get_tax_amount')
     total_amount = fields.Function(fields.Numeric('Total Amount',
-            digits=(16, Eval('currency_digits', 2)), states=STATES,
-            depends=['currency_digits', 'state']),
+            digits=(16, Eval('currency_digits', 2)),
+            depends=['currency_digits']),
         'get_total_amount')
+
+    @classmethod
+    def __setup__(cls):
+        super(Move, cls).__setup__()
+        unit_price_invisible = cls.unit_price.states.get('invisible')
+        if unit_price_invisible:
+            cls.unit_price.states['readonly'] = unit_price_invisible
+            cls.unit_price.states['invisible'] = {}
 
     @staticmethod
     def default_currency_digits():

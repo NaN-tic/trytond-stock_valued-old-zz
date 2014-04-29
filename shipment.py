@@ -53,12 +53,6 @@ class ShipmentValuedMixin:
             return self.company.currency.digits
         return 2
 
-    @classmethod
-    def done(cls, shipments):
-        super(ShipmentOut, cls).done(shipments)
-        for shipment in shipments:
-            cls.write([shipment], shipment.calc_amounts())
-
     def calc_amounts(self):
         Currency = Pool().get('currency.currency')
         untaxed_amount = Decimal(0)
@@ -133,6 +127,11 @@ class ShipmentIn(ShipmentValuedMixin):
         for shipment in shipments:
             cls.write([shipment], shipment.calc_amounts())
 
+    @classmethod
+    def done(cls, shipments):
+        super(ShipmentIn, cls).done(shipments)
+        for shipment in shipments:
+            cls.write([shipment], shipment.calc_amounts())
 
 class ShipmentOut(ShipmentValuedMixin):
     __name__ = 'stock.shipment.out'
@@ -152,5 +151,11 @@ class ShipmentOut(ShipmentValuedMixin):
     @classmethod
     def pack(cls, shipments):
         super(ShipmentOut, cls).pack(shipments)
+        for shipment in shipments:
+            cls.write([shipment], shipment.calc_amounts())
+
+    @classmethod
+    def done(cls, shipments):
+        super(ShipmentOut, cls).done(shipments)
         for shipment in shipments:
             cls.write([shipment], shipment.calc_amounts())

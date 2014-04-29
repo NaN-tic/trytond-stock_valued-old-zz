@@ -11,6 +11,13 @@ from decimal import Decimal
 __all__ = ['ShipmentIn', 'ShipmentOut']
 __metaclass__ = PoolMeta
 
+MOVES = {
+    'stock.shipment.in': 'incoming_moves',
+    'stock.shipment.in.return': 'moves',
+    'stock.shipment.out': 'outgoing_moves',
+    'stock.shipment.out.return': 'incoming_moves',
+    }
+
 
 class ShipmentValuedMixin:
     currency = fields.Function(fields.Many2One('currency.currency', 'Currency',
@@ -57,7 +64,7 @@ class ShipmentValuedMixin:
         Currency = Pool().get('currency.currency')
         untaxed_amount = Decimal(0)
         taxes = {}
-        for move in self.outgoing_moves:
+        for move in getattr(self, MOVES.get(self.__name__)):
             if move.state == 'cancelled':
                 continue
             if move.currency and move.currency != self.company.currency:

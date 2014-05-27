@@ -20,11 +20,10 @@ MOVES = {
 
 
 class ShipmentValuedMixin:
-    currency = fields.Function(fields.Many2One('currency.currency', 'Currency',
-            on_change_with=['company']),
+    currency = fields.Function(fields.Many2One('currency.currency', 'Currency'
+            ),
         'on_change_with_currency')
-    currency_digits = fields.Function(fields.Integer('Currency Digits',
-            on_change_with=['company']),
+    currency_digits = fields.Function(fields.Integer('Currency Digits'),
         'on_change_with_currency_digits')
     untaxed_amount = fields.Numeric('Untaxed',
         digits=(16, Eval('currency_digits', 2)),
@@ -50,11 +49,13 @@ class ShipmentValuedMixin:
         readonly=True,
         depends=['currency_digits']), 'get_amounts')
 
+    @fields.depends('company')
     def on_change_with_currency(self, name=None):
         if self.company:
             return self.company.currency.id
         return None
 
+    @fields.depends('company')
     def on_change_with_currency_digits(self, name=None):
         if self.company:
             return self.company.currency.digits

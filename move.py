@@ -20,8 +20,7 @@ class Move:
     "Stock Move"
     __name__ = 'stock.move'
 
-    currency_digits = fields.Function(fields.Integer('Currency Digits',
-            on_change_with=['currency']),
+    currency_digits = fields.Function(fields.Integer('Currency Digits'),
         'on_change_with_currency_digits')
     gross_unit_price = fields.Function(fields.Numeric('Gross Price',
             digits=(16, 4), states=STATES, depends=['state']),
@@ -61,6 +60,7 @@ class Move:
             return company.currency.digits
         return 2
 
+    @fields.depends('currency')
     def on_change_with_currency_digits(self, name=None):
         if self.currency:
             return self.currency.digits

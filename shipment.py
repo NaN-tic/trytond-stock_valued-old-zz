@@ -1,12 +1,12 @@
-#This file is part stock_valued module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains
-#the full copyright notices and license terms.
+# This file is part stock_valued module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains
+# the full copyright notices and license terms.
+from decimal import Decimal
 
 from trytond.model import fields
+from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval
 from trytond.transaction import Transaction
-from trytond.pool import Pool, PoolMeta
-from decimal import Decimal
 
 __all__ = ['ShipmentIn', 'ShipmentOut']
 __metaclass__ = PoolMeta
@@ -20,8 +20,8 @@ MOVES = {
 
 
 class ShipmentValuedMixin:
-    currency = fields.Function(fields.Many2One('currency.currency', 'Currency'
-            ),
+    currency = fields.Function(fields.Many2One('currency.currency',
+            'Currency'),
         'on_change_with_currency')
     currency_digits = fields.Function(fields.Integer('Currency Digits'),
         'on_change_with_currency_digits')
@@ -140,6 +140,7 @@ class ShipmentIn(ShipmentValuedMixin):
         super(ShipmentIn, cls).done(shipments)
         for shipment in shipments:
             cls.write([shipment], shipment.calc_amounts())
+
 
 class ShipmentOut(ShipmentValuedMixin):
     __name__ = 'stock.shipment.out'

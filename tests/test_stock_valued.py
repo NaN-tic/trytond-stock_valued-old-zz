@@ -7,23 +7,17 @@ from trytond.tests.test_tryton import test_depends, test_view
 
 
 class StockValuedTestCase(unittest.TestCase):
-    '''
-    Test Stock Valued module.
-    '''
+    'Test Stock Valued module'
 
     def setUp(self):
         trytond.tests.test_tryton.install_module('stock_valued')
 
     def test0005view(self):
-        '''
-        Test view.
-        '''
+        'Test view'
         test_view('stock_valued')
 
     def test0006depends(self):
-        '''
-        Test depends.
-        '''
+        'Test depends'
         test_depends()
 
 

@@ -1,7 +1,15 @@
+Version 3.4.0 - 2014-11-03
+
+Version 3.2.0 - 2014-05-22
+
+Version 3.0.0 - 2013-10-25
+
+Version 2.8.0 - 2013-04-26
+
 Version 2.6.0 - 2012-10-16
 * Active Record
 * Simplify module information with python configuration
-* Only available Price fields by Stock Price Group in move view 
+* Only available Price fields by Stock Price Group in move view
 * Add on_change_with_amount method on change price or quantity
 
 Version 2.4.0 - 2012-07-16

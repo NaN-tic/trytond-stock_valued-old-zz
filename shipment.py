@@ -62,6 +62,7 @@ class ShipmentValuedMixin:
 
     def calc_amounts(self):
         Currency = Pool().get('currency.currency')
+        Date = Pool().get('ir.date')
         untaxed_amount = Decimal(0)
         taxes = {}
         for move in getattr(self, MOVES.get(self.__name__)):
@@ -69,7 +70,8 @@ class ShipmentValuedMixin:
                 continue
             if move.currency and move.currency != self.company.currency:
                 # convert wrt currency
-                with Transaction().set_context(date=self.effective_date):
+                date = self.effective_date or Date.today()
+                with Transaction().set_context(date=date):
                     untaxed_amount += Currency.compute(move.currency,
                         move.untaxed_amount, self.company.currency,
                         round=False)

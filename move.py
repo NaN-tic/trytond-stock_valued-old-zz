@@ -6,9 +6,7 @@ from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Equal, Eval, Not
 from trytond.transaction import Transaction
-from trytond.config import config
-DIGITS = int(config.get('digits', 'unit_price_digits', 4))
-DISCOUNT_DIGITS = int(config.get('digits', 'discount_digits', 4))
+from trytond.config import config as config_
 
 __all__ = ['Move']
 __metaclass__ = PoolMeta
@@ -17,7 +15,8 @@ _ZERO = Decimal('0.0')
 STATES = {
     'invisible': Not(Equal(Eval('state', ''), 'done')),
     }
-
+DIGITS = config_.getint('product', 'price_decimal', default=4)
+DISCOUNT_DIGITS = config_.getint('product', 'discount_decimal', default=4)
 
 class Move:
     __name__ = 'stock.move'

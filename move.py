@@ -18,6 +18,7 @@ STATES = {
 DIGITS = config_.getint('product', 'price_decimal', default=4)
 DISCOUNT_DIGITS = config_.getint('product', 'discount_decimal', default=4)
 
+
 class Move:
     __name__ = 'stock.move'
 
@@ -69,8 +70,6 @@ class Move:
 
     def _taxes_amount(self):
         pool = Pool()
-        Invoice = pool.get('account.invoice')
-        Tax = pool.get('account.tax')
         try:
             PurchaseLine = pool.get('purchase.line')
         except:
@@ -80,28 +79,28 @@ class Move:
         except:
             SaleLine = type(None)
 
+        total_taxes = Decimal(0)
         if (not self.unit_price or not self.origin or
                 not isinstance(self.origin, (SaleLine, PurchaseLine))):
-            return {}
+            return total_taxes
 
-        if isinstance(self.origin, SaleLine) and self.origin.quantity >= 0:
-            inv_type = 'out_invoice'
-        elif isinstance(self.origin, SaleLine):
-            inv_type = 'out_credit_note'
-        elif (isinstance(self.origin, PurchaseLine) and
-                self.origin.quantity >= 0):
-            inv_type = 'in_invoice'
-        else:
-            inv_type = 'in_credit_note'
+        if isinstance(self.origin, SaleLine):
+            sale = self.origin.sale
+            line = self.origin
+            sale.lines = [line]
+            taxes = sale._get_taxes().itervalues()
+            total_taxes = sum(tax['amount'] for tax in taxes)
+            return total_taxes
 
-        tax_list = Tax.compute(self.origin.taxes, self.unit_price,
-            self.quantity)
-        # Don't round on each line to handle rounding error
-        taxes = {}
-        for tax in tax_list:
-            key, val = Invoice._compute_tax(tax, inv_type)
-            taxes[key] = val['amount']
-        return taxes
+        if isinstance(self.origin, PurchaseLine):
+            purchase = self.origin.purchase
+            line = self.origin
+            purchase.lines = [line]
+            taxes = purchase._get_taxes().itervalues()
+            total_taxes = sum(tax['amount'] for tax in taxes)
+            return total_taxes
+
+        return total_taxes
 
     @classmethod
     def get_origin_fields(cls, moves, names):
@@ -131,6 +130,4 @@ class Move:
         return self.untaxed_amount + self.tax_amount
 
     def get_tax_amount(self, name):
-        return sum((self.currency.round(tax)
-                for tax in self._taxes_amount().values()),
-            _ZERO)
+        return self._taxes_amount()

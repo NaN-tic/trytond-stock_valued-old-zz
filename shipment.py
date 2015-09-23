@@ -61,10 +61,12 @@ class ShipmentValuedMixin:
         return 2
 
     def calc_amounts(self):
-        Currency = Pool().get('currency.currency')
-        Date = Pool().get('ir.date')
+        pool = Pool()
+        Currency = pool.get('currency.currency')
+        Date = pool.get('ir.date')
+
         untaxed_amount = Decimal(0)
-        taxes = {}
+        tax_amount = Decimal(0)
         for move in getattr(self, MOVES.get(self.__name__)):
             if move.state == 'cancelled':
                 continue
@@ -75,18 +77,16 @@ class ShipmentValuedMixin:
                     untaxed_amount += Currency.compute(move.currency,
                         move.untaxed_amount, self.company.currency,
                         round=False)
-                    for key, value in move._taxes_amount().items():
-                        value = Currency.compute(move.currency, value,
-                            self.company.currency, round=False)
-                        taxes[key] = taxes.get(key, Decimal(0)) + value
+                    tax_amount += Currency.compute(move.currency,
+                        move.tax_amount, self.company.currency,
+                        round=False)
             else:
                 untaxed_amount += move.untaxed_amount
-                for key, value in move._taxes_amount().items():
-                    taxes[key] = taxes.get(key, Decimal(0)) + value
+                tax_amount += move.tax_amount
 
         untaxed_amount = self.company.currency.round(untaxed_amount)
-        tax_amount = sum((self.company.currency.round(tax)
-                for tax in taxes.values()), Decimal(0))
+        tax_amount = self.company.currency.round(tax_amount)
+
         return {
             'untaxed_amount': untaxed_amount,
             'tax_amount': tax_amount,

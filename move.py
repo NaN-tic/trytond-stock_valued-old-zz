@@ -80,21 +80,24 @@ class Move:
             SaleLine = type(None)
 
         total_taxes = Decimal(0)
-        if (not self.unit_price or not self.origin or
-                not isinstance(self.origin, (SaleLine, PurchaseLine))):
+        origin = self.origin
+        if isinstance(origin, self.__class__):
+            origin = origin.origin
+        if (not self.unit_price or not origin or
+                not isinstance(origin, (SaleLine, PurchaseLine))):
             return total_taxes
 
-        if isinstance(self.origin, SaleLine):
-            sale = self.origin.sale
-            line = self.origin
+        if isinstance(origin, SaleLine):
+            sale = origin.sale
+            line = origin
             sale.lines = [line]
             taxes = sale._get_taxes().itervalues()
             total_taxes = sum(tax['amount'] for tax in taxes)
             return total_taxes
 
-        if isinstance(self.origin, PurchaseLine):
-            purchase = self.origin.purchase
-            line = self.origin
+        if isinstance(origin, PurchaseLine):
+            purchase = origin.purchase
+            line = origin
             purchase.lines = [line]
             taxes = purchase._get_taxes().itervalues()
             total_taxes = sum(tax['amount'] for tax in taxes)
@@ -108,22 +111,25 @@ class Move:
         for fname in names:
             result[fname] = {}
         for move in moves:
+            origin = move.origin
+            if isinstance(origin, cls):
+                origin = origin.origin
             if 'gross_unit_price' in names:
-                result['gross_unit_price'][move.id] = (move.origin and
-                    hasattr(move.origin, 'gross_unit_price') and
-                    move.origin.gross_unit_price or _ZERO)
+                result['gross_unit_price'][move.id] = (origin and
+                    hasattr(origin, 'gross_unit_price') and
+                    origin.gross_unit_price or _ZERO)
             if 'discount' in names:
-                result['discount'][move.id] = (move.origin and
-                    hasattr(move.origin, 'discount') and
-                    move.origin.discount or _ZERO)
+                result['discount'][move.id] = (origin and
+                    hasattr(origin, 'discount') and
+                    origin.discount or _ZERO)
             if 'untaxed_amount' in names:
                 result['untaxed_amount'][move.id] = (
                     Decimal(str(move.quantity or 0)) *
                     (move.unit_price or _ZERO))
             if 'taxes' in names:
-                result['taxes'][move.id] = (move.origin and
-                    hasattr(move.origin, 'taxes') and
-                    [t.id for t in move.origin.taxes] or [])
+                result['taxes'][move.id] = (origin and
+                    hasattr(origin, 'taxes') and
+                    [t.id for t in origin.taxes] or [])
         return result
 
     def get_total_amount(self, name):

@@ -1,5 +1,6 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
+from copy import copy
 from decimal import Decimal
 
 from trytond.model import fields
@@ -126,21 +127,41 @@ class ShipmentIn(ShipmentValuedMixin):
     @classmethod
     def create(cls, shipments):
         shipments = super(ShipmentIn, cls).create(shipments)
+        to_write = []
         for shipment in shipments:
-            cls.write([shipment], shipment.calc_amounts())
+            to_write.extend(([shipment], shipment.calc_amounts()))
+        cls.write(*to_write)
         return shipments
+
+    @classmethod
+    def write(cls, *args):
+        new_args = []
+        actions = iter(args)
+        for shipments, values in zip(actions, actions):
+            if set(values) & set(['incoming_moves']):
+                for shipment in shipments:
+                    new_values = copy(values)
+                    new_values.update(shipment.calc_amounts())
+                    new_args.extend(([shipment], new_values))
+            else:
+                new_args.extend((shipments, values))
+        super(ShipmentIn, cls).write(*new_args)
 
     @classmethod
     def receive(cls, shipments):
         super(ShipmentIn, cls).receive(shipments)
+        to_write = []
         for shipment in shipments:
-            cls.write([shipment], shipment.calc_amounts())
+            to_write.extend(([shipment], shipment.calc_amounts()))
+        cls.write(*to_write)
 
     @classmethod
     def done(cls, shipments):
         super(ShipmentIn, cls).done(shipments)
+        to_write = []
         for shipment in shipments:
-            cls.write([shipment], shipment.calc_amounts())
+            to_write.extend(([shipment], shipment.calc_amounts()))
+        cls.write(*to_write)
 
 
 class ShipmentOut(ShipmentValuedMixin):
@@ -149,23 +170,31 @@ class ShipmentOut(ShipmentValuedMixin):
     @classmethod
     def wait(cls, shipments):
         super(ShipmentOut, cls).wait(shipments)
+        to_write = []
         for shipment in shipments:
-            cls.write([shipment], shipment.calc_amounts())
+            to_write.extend(([shipment], shipment.calc_amounts()))
+        cls.write(*to_write)
 
     @classmethod
     def assign(cls, shipments):
         super(ShipmentOut, cls).assign(shipments)
+        to_write = []
         for shipment in shipments:
-            cls.write([shipment], shipment.calc_amounts())
+            to_write.extend(([shipment], shipment.calc_amounts()))
+        cls.write(*to_write)
 
     @classmethod
     def pack(cls, shipments):
         super(ShipmentOut, cls).pack(shipments)
+        to_write = []
         for shipment in shipments:
-            cls.write([shipment], shipment.calc_amounts())
+            to_write.extend(([shipment], shipment.calc_amounts()))
+        cls.write(*to_write)
 
     @classmethod
     def done(cls, shipments):
         super(ShipmentOut, cls).done(shipments)
+        to_write = []
         for shipment in shipments:
-            cls.write([shipment], shipment.calc_amounts())
+            to_write.extend(([shipment], shipment.calc_amounts()))
+        cls.write(*to_write)

@@ -130,7 +130,8 @@ class ShipmentIn(ShipmentValuedMixin):
         to_write = []
         for shipment in shipments:
             to_write.extend(([shipment], shipment.calc_amounts()))
-        cls.write(*to_write)
+        if to_write:
+            cls.write(*to_write)
         return shipments
 
     @classmethod
@@ -153,7 +154,8 @@ class ShipmentIn(ShipmentValuedMixin):
         to_write = []
         for shipment in shipments:
             to_write.extend(([shipment], shipment.calc_amounts()))
-        cls.write(*to_write)
+        if to_write:
+            cls.write(*to_write)
 
     @classmethod
     def done(cls, shipments):
@@ -161,7 +163,8 @@ class ShipmentIn(ShipmentValuedMixin):
         to_write = []
         for shipment in shipments:
             to_write.extend(([shipment], shipment.calc_amounts()))
-        cls.write(*to_write)
+        if to_write:
+            cls.write(*to_write)
 
 
 class ShipmentOut(ShipmentValuedMixin):
@@ -173,7 +176,8 @@ class ShipmentOut(ShipmentValuedMixin):
         to_write = []
         for shipment in shipments:
             to_write.extend(([shipment], shipment.calc_amounts()))
-        cls.write(*to_write)
+        if to_write:
+            cls.write(*to_write)
 
     @classmethod
     def assign(cls, shipments):
@@ -181,7 +185,8 @@ class ShipmentOut(ShipmentValuedMixin):
         to_write = []
         for shipment in shipments:
             to_write.extend(([shipment], shipment.calc_amounts()))
-        cls.write(*to_write)
+        if to_write:
+            cls.write(*to_write)
 
     @classmethod
     def pack(cls, shipments):
@@ -189,7 +194,8 @@ class ShipmentOut(ShipmentValuedMixin):
         to_write = []
         for shipment in shipments:
             to_write.extend(([shipment], shipment.calc_amounts()))
-        cls.write(*to_write)
+        if to_write:
+            cls.write(*to_write)
 
     @classmethod
     def done(cls, shipments):
@@ -197,4 +203,5 @@ class ShipmentOut(ShipmentValuedMixin):
         to_write = []
         for shipment in shipments:
             to_write.extend(([shipment], shipment.calc_amounts()))
-        cls.write(*to_write)
+        if to_write:
+            cls.write(*to_write)

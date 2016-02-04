@@ -7,6 +7,7 @@ from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Equal, Eval, Not
 from trytond.transaction import Transaction
 from trytond.config import config as config_
+from trytond.modules.product import price_digits
 
 __all__ = ['Move']
 __metaclass__ = PoolMeta
@@ -25,7 +26,7 @@ class Move:
     currency_digits = fields.Function(fields.Integer('Currency Digits'),
         'on_change_with_currency_digits')
     gross_unit_price = fields.Function(fields.Numeric('Gross Price',
-            digits=(16, DIGITS), states=STATES, depends=['state']),
+            digits=price_digits, states=STATES, depends=['state']),
         'get_origin_fields')
     discount = fields.Function(fields.Numeric('Discount',
             digits=(16, DISCOUNT_DIGITS), states=STATES, depends=['state']),

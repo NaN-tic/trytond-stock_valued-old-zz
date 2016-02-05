@@ -135,17 +135,18 @@ class ShipmentIn(ShipmentValuedMixin):
 
     @classmethod
     def write(cls, *args):
-        new_args = []
         actions = iter(args)
+        to_update = []
         for shipments, values in zip(actions, actions):
             if set(values) & set(['incoming_moves']):
-                for shipment in shipments:
-                    new_values = copy(values)
-                    new_values.update(shipment.calc_amounts())
-                    new_args.extend(([shipment], new_values))
-            else:
-                new_args.extend((shipments, values))
-        super(ShipmentIn, cls).write(*new_args)
+                to_update.extend(shipments)
+        super(ShipmentIn, cls).write(*args)
+        to_write = []
+        for shipment in to_update:
+            values = shipment.calc_amounts()
+            to_write.extend(([shipment], values))
+        if to_write:
+            cls.write(*to_write)
 
     @classmethod
     def receive(cls, shipments):
